@@ -1,19 +1,40 @@
 # ASTRONEER Save Fixer
 
-Static browser tool for fixing ASTRONEER `.savegame` files after Creative Mode disables missions.
+Did you accidentally turn on Creative Mode in ASTRONEER and lose access to missions?
 
-The save is processed locally in the browser. It is not uploaded to a server.
+This tool tries to repair that save.
 
-## What It Changes
+Open the fixer here:
 
-- Restores the hidden mission availability flag inside `AstroMissionsManager`.
-- Clears common Creative Mode flags such as `bCreativeModeActive`, `bIsIndividualDedicatedServerGame`, and related creative ability toggles.
-- Downloads the fixed save with the same name, except `$c` is changed back to `$`.
+https://te4a.github.io/astroneer-save-fixer/
 
-## Local Use
+## What To Do
 
-Open `index.html` in a browser, choose a `.savegame`, then download the fixed copy.
+1. Make a backup of your original save.
+2. Open the link above.
+3. Choose your `.savegame` file.
+4. Click **Fix save**.
+5. Download the repaired file.
+6. Put the repaired file back into your ASTRONEER save folder.
 
-## Notes
+The file is fixed in your browser. It is not uploaded anywhere.
 
-This was tested against saves where missions were disabled after Creative Mode was enabled and then turned off. Always keep a backup of the original save.
+## Where Saves Usually Are
+
+On Windows, ASTRONEER saves are usually here:
+
+```text
+%LOCALAPPDATA%\Astro\Saved\SaveGames
+```
+
+You can paste that path into File Explorer.
+
+## Important
+
+Keep a backup. This tool was made from real saves where Creative Mode was turned on by mistake, but save files can be different.
+
+The repaired file keeps the original name as much as possible. If the name contains `$c`, the tool changes it back to `$`, because ASTRONEER uses that marker for Creative Mode saves.
+
+## What It Fixes
+
+It restores the mission list and removes the most common Creative Mode markers from the save.

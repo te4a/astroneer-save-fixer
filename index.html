@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ASTRONEER Save Fixer</title>
     <meta
       name="description"
-      content="Локальный браузерный инструмент для восстановления заданий в ASTRONEER savegame после включения Creative Mode."
+      content="Fix an ASTRONEER save after Creative Mode disables missions. The file stays on your computer."
     />
     <link rel="stylesheet" href="./styles.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
@@ -19,25 +19,35 @@
           <p class="eyebrow">ASTRONEER</p>
           <h1 id="title">Save Fixer</h1>
           <p class="summary">
-            Восстанавливает задания после случайного включения Creative Mode. Файл обрабатывается прямо в браузере и никуда не загружается.
+            Accidentally turned on Creative Mode and lost missions? Choose your save file, fix it locally in this browser, then put the repaired file back into ASTRONEER.
           </p>
         </div>
 
+        <section class="steps" aria-label="Before you start">
+          <h2>Before you start</h2>
+          <ol>
+            <li>Make a backup of your original save.</li>
+            <li>Choose the `.savegame` file that lost missions.</li>
+            <li>Download the repaired file and place it back in your ASTRONEER save folder.</li>
+          </ol>
+          <p>Your save stays on this computer. The page does not upload it anywhere.</p>
+        </section>
+
         <label class="dropzone" for="save-file" id="dropzone">
           <input id="save-file" type="file" accept=".savegame" />
-          <span class="drop-title">Выбери .savegame</span>
-          <span class="drop-subtitle">или перетащи файл сюда</span>
+          <span class="drop-title">Choose your .savegame</span>
+          <span class="drop-subtitle">or drag the file here</span>
         </label>
 
         <section class="panel" aria-live="polite">
           <div class="status-row">
             <span class="status-dot" id="status-dot"></span>
-            <span id="status">Файл ещё не выбран</span>
+            <span id="status">No file selected yet</span>
           </div>
 
           <div class="actions">
-            <button id="fix-button" type="button" disabled>Починить сейв</button>
-            <a id="download-link" class="download" hidden>Скачать исправленный файл</a>
+            <button id="fix-button" type="button" disabled>Fix save</button>
+            <a id="download-link" class="download" hidden>Download repaired file</a>
           </div>
 
           <pre id="log" class="log"></pre>

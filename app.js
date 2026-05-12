@@ -70,7 +70,7 @@ function indexOfBytes(haystack, needle, start = 0) {
 function parseNames(raw) {
   const view = new DataView(raw.buffer, raw.byteOffset, raw.byteLength);
   const count = readI32(view, NAME_COUNT_OFFSET);
-  if (count <= 0 || count > 1_000_000) throw new Error(`Некорректное число имён: ${count}`);
+  if (count <= 0 || count > 1_000_000) throw new Error(`This does not look like a supported ASTRONEER save. Name count: ${count}`);
 
   const names = [];
   const warnings = [];
@@ -80,7 +80,7 @@ function parseNames(raw) {
     const len = readI32(view, pos);
     pos += 4;
     if (len <= 0 || len > 10000 || pos + len > raw.length) {
-      warnings.push(`Таблица имён остановлена на записи ${i}; нужные поля уже прочитаны.`);
+      warnings.push(`Read the save structure far enough to find the needed fields.`);
       break;
     }
 
@@ -109,12 +109,12 @@ function findNameHits(raw, namesInfo, name, start = 0) {
 
 function setByte(raw, offset, value, label, changes) {
   if (offset < 0 || offset >= raw.length) {
-    changes.push(`${label}: пропущено, адрес вне файла`);
+    changes.push(`${label}: skipped`);
     return;
   }
   const old = raw[offset];
   raw[offset] = value;
-  changes.push(`${label}: 0x${offset.toString(16)} ${old} -> ${value}${old === value ? " (уже было)" : ""}`);
+  changes.push(`${label}: ${old} -> ${value}${old === value ? " (already ok)" : ""}`);
 }
 
 function setFirstBoolByName(raw, namesInfo, name, value, changes) {
@@ -124,7 +124,7 @@ function setFirstBoolByName(raw, namesInfo, name, value, changes) {
   });
 
   if (hit === undefined) {
-    changes.push(`${name}: не найдено`);
+    changes.push(`${name}: not found`);
     return;
   }
 
@@ -134,14 +134,14 @@ function setFirstBoolByName(raw, namesInfo, name, value, changes) {
 function restoreMissionFlag(raw, namesInfo, changes) {
   const managerNeedle = new TextEncoder().encode("AstroMissionsManager");
   const managerOffset = indexOfBytes(raw, managerNeedle);
-  if (managerOffset < 0) throw new Error("Не найден AstroMissionsManager.");
+  if (managerOffset < 0) throw new Error("Could not find the mission data in this save.");
 
   const hit = findNameHits(raw, namesInfo, "bMissionsDisabled", managerOffset).find((pos) => {
     const valueOffset = pos + 0x25;
     return valueOffset < raw.length && (raw[valueOffset] === 0 || raw[valueOffset] === 1);
   });
 
-  if (hit === undefined) throw new Error("Не найден скрытый флаг заданий.");
+  if (hit === undefined) throw new Error("Could not find the mission lock flag in this save.");
 
   setByte(raw, hit + 0x25, 0, "AstroMissionsManager hidden mission flag", changes);
 }
@@ -151,8 +151,8 @@ function fixedName(name) {
 }
 
 function fixSave(bytes) {
-  if (!window.pako) throw new Error("Библиотека pako ещё не загрузилась.");
-  if (bytes.length <= WRAPPER_SIZE) throw new Error("Файл слишком маленький.");
+  if (!window.pako) throw new Error("The page is still loading. Please try again in a moment.");
+  if (bytes.length <= WRAPPER_SIZE) throw new Error("This file is too small to be an ASTRONEER save.");
 
   const wrapped = new Uint8Array(bytes);
   const wrapperView = new DataView(wrapped.buffer, wrapped.byteOffset, wrapped.byteLength);
@@ -160,9 +160,9 @@ function fixSave(bytes) {
   const raw = window.pako.inflate(wrapped.subarray(WRAPPER_SIZE));
 
   if (raw.length !== expectedRawSize) {
-    throw new Error(`Размер распаковки не совпал: заголовок ${expectedRawSize}, фактически ${raw.length}.`);
+    throw new Error(`The save unpacked to an unexpected size.`);
   }
-  if (decodeAscii(raw, 0, 4) !== "GVAS") throw new Error("После распаковки не найден GVAS.");
+  if (decodeAscii(raw, 0, 4) !== "GVAS") throw new Error("This does not look like a supported ASTRONEER save.");
 
   const namesInfo = parseNames(raw);
   const changes = [...namesInfo.warnings];
@@ -184,8 +184,8 @@ async function chooseFile(file) {
   fixButton.disabled = false;
   downloadLink.hidden = true;
   downloadLink.removeAttribute("href");
-  setStatus(`Выбран файл: ${file.name}`, "ready");
-  log(`Размер: ${selectedBytes.length.toLocaleString("ru-RU")} байт`);
+  setStatus(`Selected: ${file.name}`, "ready");
+  log(`Size: ${selectedBytes.length.toLocaleString("en-US")} bytes`);
 }
 
 fileInput.addEventListener("change", () => {
@@ -219,7 +219,7 @@ fixButton.addEventListener("click", () => {
     downloadLink.href = url;
     downloadLink.download = fixedName(selectedFile.name);
     downloadLink.hidden = false;
-    setStatus("Сейв исправлен", "good");
+    setStatus("Save repaired", "good");
     log(changes);
   } catch (error) {
     showError(error);
@@ -227,6 +227,6 @@ fixButton.addEventListener("click", () => {
 });
 
 function showError(error) {
-  setStatus("Не удалось обработать файл", "bad");
+  setStatus("Could not repair this file", "bad");
   log(error && error.message ? error.message : String(error));
 }
