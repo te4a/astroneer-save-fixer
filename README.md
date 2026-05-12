@@ -8,7 +8,7 @@ The save is processed locally in the browser. It is not uploaded to a server.
 
 - Restores the hidden mission availability flag inside `AstroMissionsManager`.
 - Clears common Creative Mode flags such as `bCreativeModeActive`, `bIsIndividualDedicatedServerGame`, and related creative ability toggles.
-- Writes a new `.fixed.savegame` file and leaves the original untouched.
+- Downloads the fixed save with the same name, except `$c` is changed back to `$`.
 
 ## Local Use
 

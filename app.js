@@ -147,7 +147,7 @@ function restoreMissionFlag(raw, namesInfo, changes) {
 }
 
 function fixedName(name) {
-  return name.replace(/\$c/i, "$").replace(/\.savegame$/i, "") + ".fixed.savegame";
+  return name.replace(/\$c/i, "$");
 }
 
 function fixSave(bytes) {
