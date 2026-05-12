@@ -1,0 +1,6 @@
+*.savegame
+*.raw
+*.json
+*.savecfg
+node_modules/
+.DS_Store

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ASTRONEER Save Fixer</title>
+    <meta
+      name="description"
+      content="Локальный браузерный инструмент для восстановления заданий в ASTRONEER savegame после включения Creative Mode."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <main class="app">
+      <section class="workspace" aria-labelledby="title">
+        <div class="intro">
+          <p class="eyebrow">ASTRONEER</p>
+          <h1 id="title">Save Fixer</h1>
+          <p class="summary">
+            Восстанавливает задания после случайного включения Creative Mode. Файл обрабатывается прямо в браузере и никуда не загружается.
+          </p>
+        </div>
+
+        <label class="dropzone" for="save-file" id="dropzone">
+          <input id="save-file" type="file" accept=".savegame" />
+          <span class="drop-title">Выбери .savegame</span>
+          <span class="drop-subtitle">или перетащи файл сюда</span>
+        </label>
+
+        <section class="panel" aria-live="polite">
+          <div class="status-row">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status">Файл ещё не выбран</span>
+          </div>
+
+          <div class="actions">
+            <button id="fix-button" type="button" disabled>Починить сейв</button>
+            <a id="download-link" class="download" hidden>Скачать исправленный файл</a>
+          </div>
+
+          <pre id="log" class="log"></pre>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
